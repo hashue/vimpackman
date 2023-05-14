@@ -35,4 +35,7 @@ function! vimpackman#update() abort
   "todo
 endfunction
 
+function! vimpackman#clean() abort
+  "todo
+endfunction
 
