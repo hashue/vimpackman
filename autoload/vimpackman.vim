@@ -31,3 +31,8 @@ function! vimpackman#add(plugname, ...) abort
   l:plug
 endfunction
 
+function! vimpackman#update() abort
+  "todo
+endfunction
+
+
