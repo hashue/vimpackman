@@ -19,3 +19,12 @@ function s:suite.addPlugin()
   call vimpackman#add('hashue/Defie.vim')
   call s:assert.equals(l:expect, g:vimpackman#pluglist)
 endfunction
+
+function s:suite.installPlugin()
+  call system('mkdir /tmp/vimpackman')
+  call vimpackman#init('/tmp/vimpackman')
+  call vimpackman#add('hashue/Defie.vim')
+  call vimpackman#update()
+  call s:assert.equals(1, isdirectory('/tmp/vimpackman/Defie.vim'))
+  call system('rm -rf /tmp/vimpackman')
+endfunction
