@@ -7,8 +7,15 @@ function s:suite.matchPlugName()
   call s:assert.equals(v:false,vimpackman#is_plugname('/Defie.vim'))
 endfunction
 
-"プラグイン情報が追加できるかのテスト function s:suite.addPlugin()
-  let l:expect = {'Defie.vim': { 'name': 'Defie.vim', 'url': 'https://github.com/hashue/Defie.vim.git'}}
+"プラグイン情報が追加できるかのテスト
+function s:suite.addPlugin()
+  let l:expect = {
+        \  'Defie.vim': {
+        \    'name': 'Defie.vim',
+        \    'url': 'https://github.com/hashue/Defie.vim.git',
+        \    'stat': 'not_installed'
+        \  }
+        \}
   call vimpackman#add('hashue/Defie.vim')
   call s:assert.equals(l:expect, g:vimpackman#pluglist)
 endfunction
