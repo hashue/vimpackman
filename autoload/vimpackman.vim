@@ -1,5 +1,6 @@
-function! vimpackman#init() abort
+function! vimpackman#init(path = '~/.cache/vimpackman') abort
   let g:vimpackman#pluglist = {}
+  let s:base_path = a:path
 endfunction
 
 function! s:ensure_installed() abort
@@ -35,20 +36,20 @@ function! vimpackman#update() abort
   "インストール処理
   for l:plugname in keys(g:vimpackman#pluglist)
     let l:plug = g:vimpackman#pluglist[l:plugname]
+    let l:dir  = s:base_path . '/' . l:plug.name
+
+    "ディレクトリが存在する = インストール済みなのでスキップする
+    if isdirectory(expand(l:dir))
+      let l:plug.stat = 'installed'
+      continue
+    endif
 
     echomsg printf("[vimpackman] Install: %s",l:plug.name)
-
-    call system(printf('git clone %s ~/.cache/vimpackman/%s',l:plug.url, l:plug.name))
-
-    if v:shell_error != 0
-      echomsg printf("[vimpackman] Install failed: %s",l:plug.url)
-    else
-      echomsg printf("[vimpackman] Install successed:  %s",l:plug.url)
-      let l:plug.stat = 'installed'
-    endif
+    let l:res  = system(printf('git clone %s %s',l:plug.url, l:dir))
+    let l:stat = (v:shell_error == 0)? 'successed': 'failed'
+    echomsg printf("[vimpackman] Install %s: %s", l:stat, l:res)
   endfor
 
-  echomsg g:vimpackman#pluglist
   "プラグインが入っているディレクトリをVimが参照できるようにruntimepathに追加
   if isdirectory('~/.cache/vimpackman')
     set rtp+=~/.cache/vimpackman
