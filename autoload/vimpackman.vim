@@ -40,12 +40,14 @@ function! vimpackman#update() abort
 
     "ディレクトリが存在する = インストール済みなのでスキップする
     if isdirectory(expand(l:dir))
+      echomsg printf("[vimpackman] Update: %s",l:plug.name)
+      let l:res  = system(printf('git -C %s pull ', l:dir))
+    else
+      echomsg printf("[vimpackman] Install: %s",l:plug.name)
+      let l:res  = system(printf('git clone %s %s',l:plug.url, l:dir))
       let l:plug.stat = 'installed'
-      continue
     endif
 
-    echomsg printf("[vimpackman] Install: %s",l:plug.name)
-    let l:res  = system(printf('git clone %s %s',l:plug.url, l:dir))
     let l:stat = (v:shell_error == 0)? 'successed': 'failed'
     echomsg printf("[vimpackman] Install %s: %s", l:stat, l:res)
   endfor
