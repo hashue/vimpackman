@@ -1,6 +1,10 @@
 function! vimpackman#init(path = '~/.cache/vimpackman') abort
   let g:vimpackman#pluglist = {}
-  let s:base_path = a:path
+  let s:base_path = expand(a:path)
+  if !isdirectory(s:base_path)
+    call mkdir(s:base_path)
+  endif
+  set rtp+=s:base_path
 endfunction
 
 function! s:ensure_installed() abort
@@ -52,10 +56,6 @@ function! vimpackman#update() abort
     echomsg printf("[vimpackman] Install %s: %s", l:stat, l:res)
   endfor
 
-  "プラグインが入っているディレクトリをVimが参照できるようにruntimepathに追加
-  if isdirectory('~/.cache/vimpackman')
-    set rtp+=~/.cache/vimpackman
-  endif
 endfunction
 
 function! vimpackman#clean() abort
