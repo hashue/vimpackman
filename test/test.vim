@@ -5,6 +5,14 @@ let s:assert = themis#helper('assert')
 function s:suite.matchPlugName()
   call s:assert.equals(v:true,vimpackman#is_plugname('hashue/Defie.vim'))
   call s:assert.equals(v:false,vimpackman#is_plugname('/Defie.vim'))
+
+"プラグイン初期化関数のテスト
+function s:suite.initVimpackman()
+  let l:path = '/tmp/vimpackman'
+  call vimpackman#init(l:path)
+  call s:assert.equals(v:true, exists('g:vimpackman#pluglist'))
+  call s:assert.equals(v:true, isdirectory(l:path))
+  call system('rm -rf /tmp/vimpackman')
 endfunction
 
 "プラグイン情報が追加できるかのテスト
@@ -20,11 +28,10 @@ function s:suite.addPlugin()
   call s:assert.equals(l:expect, g:vimpackman#pluglist)
 endfunction
 
+"プラグインがインストールできるかのテスト
 function s:suite.installPlugin()
-  call system('mkdir /tmp/vimpackman')
   call vimpackman#init('/tmp/vimpackman')
   call vimpackman#add('hashue/Defie.vim')
   call vimpackman#update()
   call s:assert.equals(1, isdirectory('/tmp/vimpackman/Defie.vim'))
-  call system('rm -rf /tmp/vimpackman')
 endfunction
