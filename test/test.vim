@@ -35,3 +35,14 @@ function s:suite.installPlugin()
   call vimpackman#update()
   call s:assert.equals(1, isdirectory('/tmp/vimpackman/Defie.vim'))
 endfunction
+
+"プラグインが削除できるかのテスト
+function s:suite.removePlugin()
+  call vimpackman#init('/tmp/vimpackman')
+  call vimpackman#add('vim-denops/denops.vim')
+  call vimpackman#add('hashue/Defie.vim')
+  call vimpackman#init('/tmp/vimpackman')
+  call vimpackman#add('hashue/Defie.vim')
+  call vimpackman#update()
+  call s:assert.equals(1, !isdirectory('/tmp/vimpackman/denops.vim'))
+endfunction
