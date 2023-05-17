@@ -59,6 +59,43 @@ function! vimpackman#update() abort
 endfunction
 
 function! vimpackman#clean() abort
-  "todo
+  let l:err = 0
+  let declared_plug = map(keys(g:vimpackman#pluglist), {-> s:base_path . '/' . v:val})
+  let l:to_remove = s:RemoveAllDuplicates(sort(extend(declared_plug,s:dir_match())))
+
+  for l:path in l:to_remove
+    if delete(l:path, 'rf') != 0
+      echohl ErrorMsg
+      echom 'Clean failed: ' . l:path
+      echohl None
+      let l:err = 1
+    endif
+    echomsg 'Successfully cleaned. '.l:path
+  endfor
 endfunction
 
+
+function! s:dir_match() abort
+  return filter(globpath(s:base_path, '*', 0, 1), {-> isdirectory(v:val)})
+endfunction
+
+function! s:RemoveAllDuplicates(list)
+    let dict = {}
+    let duplicates = {}
+    for value in a:list
+        if has_key(dict, value)
+            let duplicates[value] = 1
+        else
+            let dict[value] = 1
+        endif
+    endfor
+
+    let result = []
+    for value in a:list
+        if !has_key(duplicates, value)
+            let result += [value]
+        endif
+    endfor
+
+    return result
+endfunction
